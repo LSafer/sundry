@@ -18,8 +18,6 @@ import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
-import kotlin.reflect.full.findParameterByName
-import kotlin.reflect.full.primaryConstructor
 
 private val SCRIM_COLOR = Color.Black.copy(alpha = 0.6f)
 
@@ -92,7 +90,7 @@ fun DatePickerDialogCompat(
                     )
                 }
             },
-            properties = createDialogPropertiesScrimColor(scrimColor),
+            properties = createDialogProperties(scrimColor),
             content = {
                 DatePicker(
                     state = pickerState,
@@ -102,14 +100,4 @@ fun DatePickerDialogCompat(
     }
 }
 
-private val createDialogPropertiesScrimColor: (Color) -> DialogProperties = run {
-    val constructor = DialogProperties::class.primaryConstructor
-    val scrimColorParam = constructor?.findParameterByName("scrimColor")
-
-    scrimColorParam ?: return@run { DialogProperties() }
-
-    if (constructor.parameters.any { !it.isOptional })
-        return@run { DialogProperties() }
-
-    return@run { constructor.callBy(mapOf(scrimColorParam to it)) }
-}
+internal expect fun createDialogProperties(scrimColor: Color): DialogProperties

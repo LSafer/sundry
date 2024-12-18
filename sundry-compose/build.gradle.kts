@@ -12,6 +12,11 @@ plugins {
 kotlin {
     jvm("desktop")
 
+    js {
+        browser()
+        useEsModules()
+    }
+
     androidTarget {
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
