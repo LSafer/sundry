@@ -1,19 +1,22 @@
 package net.lsafer.sundry.compose.simplenav
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.serialization.KSerializer
 
 interface SimpleNavController<T : Any> {
     interface State<T : Any> {
-        val current: T?
+        val route: T?
     }
 
     val stateSerializer: KSerializer<out State<T>>
     val state: MutableStateFlow<out State<T>>
 
-    val current get() = state.value.current
-
-    fun push(value: T): Boolean
+    fun push(route: T): Boolean
     fun back(): Boolean
     fun forward(): Boolean
 }
+
+val <T : Any> SimpleNavController<T>.current: T?
+    @Composable get() = state.collectAsState().value.route

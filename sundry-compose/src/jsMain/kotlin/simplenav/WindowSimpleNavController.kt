@@ -15,7 +15,7 @@ class WindowSimpleNavController<T : Any>(
 ) : SimpleNavController<T> {
     @Serializable
     data class State<T : Any>(
-        override val current: T? = null,
+        override val route: T? = null,
     ) : SimpleNavController.State<T>
 
     var isInstalled: Boolean = false
@@ -23,11 +23,11 @@ class WindowSimpleNavController<T : Any>(
 
     override val state = MutableStateFlow(State<T>())
 
-    override fun push(value: T): Boolean {
+    override fun push(route: T): Boolean {
         require(isInstalled) { "NavController not installed" }
         this.state.update {
-            if (value == it.current) return false
-            State(current = value)
+            if (route == it.route) return false
+            State(route = route)
         }
         return true
     }

@@ -17,16 +17,16 @@ class InMemorySimpleNavController<T : Any>(
         val entries: List<T> = emptyList(),
         val position: Int = entries.size - 1,
     ) : SimpleNavController.State<T> {
-        override val current: T? get() = entries.getOrNull(position)
+        override val route: T? get() = entries.getOrNull(position)
     }
 
     override val state = MutableStateFlow(State<T>())
 
-    override fun push(value: T): Boolean {
+    override fun push(route: T): Boolean {
         this.state.update {
-            if (value == it.current) return false
+            if (route == it.route) return false
             State(
-                entries = it.entries.take(it.position + 1) + value,
+                entries = it.entries.take(it.position + 1) + route,
                 position = it.position + 1,
             )
         }
