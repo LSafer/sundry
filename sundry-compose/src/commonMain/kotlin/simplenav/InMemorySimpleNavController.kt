@@ -6,10 +6,13 @@ import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.serializer
 
-inline fun <reified T : Any> InMemorySimpleNavController() =
-    InMemorySimpleNavController<T>(serializer())
+inline fun <reified T : Any> InMemorySimpleNavController(
+    initialState: InMemorySimpleNavController.State<T> =
+        InMemorySimpleNavController.State(),
+) = InMemorySimpleNavController(initialState, serializer())
 
 class InMemorySimpleNavController<T : Any>(
+    initialState: State<T> = State(),
     override val stateSerializer: KSerializer<State<T>>,
 ) : SimpleNavController<T> {
     @Serializable
@@ -20,7 +23,7 @@ class InMemorySimpleNavController<T : Any>(
         override val route: T? get() = entries.getOrNull(position)
     }
 
-    override val state = MutableStateFlow(State<T>())
+    override val state = MutableStateFlow(initialState)
 
     override fun push(route: T): Boolean {
         this.state.update {

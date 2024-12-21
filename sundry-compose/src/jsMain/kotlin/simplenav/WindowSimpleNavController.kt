@@ -7,10 +7,13 @@ import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.serializer
 
-inline fun <reified T : Any> WindowSimpleNavController() =
-    WindowSimpleNavController<T>(serializer())
+inline fun <reified T : Any> WindowSimpleNavController(
+    initialState: WindowSimpleNavController.State<T> =
+        WindowSimpleNavController.State(),
+) = WindowSimpleNavController(initialState, serializer())
 
 class WindowSimpleNavController<T : Any>(
+    initialState: State<T> = State(),
     override val stateSerializer: KSerializer<State<T>>,
 ) : SimpleNavController<T> {
     @Serializable
@@ -21,7 +24,7 @@ class WindowSimpleNavController<T : Any>(
     var isInstalled: Boolean = false
         internal set
 
-    override val state = MutableStateFlow(State<T>())
+    override val state = MutableStateFlow(initialState)
 
     override fun push(route: T): Boolean {
         require(isInstalled) { "NavController not installed" }
