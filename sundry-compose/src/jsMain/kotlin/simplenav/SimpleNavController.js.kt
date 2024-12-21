@@ -15,8 +15,11 @@ private var gIsInstalled = false
 private var gInstalledScope: CoroutineScope? = null
 private var gOriginalListener: ((HashChangeEvent) -> dynamic)? = null
 
-fun <T : Any> WindowSimpleNavController<T>.install() {
-    check(!gIsInstalled) { "A navigation controller was already installed" }
+fun <T : Any> WindowSimpleNavController<T>.tryGlobalInstall() =
+    if (gIsInstalled) false else run { globalInstall(); true }
+
+fun <T : Any> WindowSimpleNavController<T>.globalInstall() {
+    check(!gIsInstalled) { "A NavController was already globally installed" }
 
     val installedScope = CoroutineScope(Dispatchers.Default)
 
@@ -52,8 +55,11 @@ fun <T : Any> WindowSimpleNavController<T>.install() {
     }
 }
 
-fun <T : Any> WindowSimpleNavController<T>.uninstall(): Boolean {
-    if (!gIsInstalled) return false
+fun <T : Any> WindowSimpleNavController<T>.tryGlobalUninstall() =
+    if (!isInstalled) false else run { globalUninstall(); true }
+
+fun <T : Any> WindowSimpleNavController<T>.globalUninstall() {
+    check(gIsInstalled) { "NavController is not globally installed" }
 
     val installedScope = gInstalledScope
     val originalListener = gOriginalListener
@@ -65,5 +71,4 @@ fun <T : Any> WindowSimpleNavController<T>.uninstall(): Boolean {
 
     installedScope?.cancel()
     window.onhashchange = originalListener
-    return true
 }
