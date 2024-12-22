@@ -33,3 +33,4 @@ dependencyResolutionManagement {
 include(":sundry-compose")
 include(":sundry-compose-adaptive")
 include(":sundry-compose-paging")
+include(":sundry-storage")
