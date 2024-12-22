@@ -9,6 +9,6 @@ class SimpleDataStore<T : Any>(initial: T) {
     val data = MutableStateFlow(initial)
 }
 
-fun MutableStateFlow<JsonObject>.edit(
+fun SimpleDataStore<JsonObject>.edit(
     block: (MutableMap<String, JsonElement>) -> Unit,
-) = update { JsonObject(buildMap { putAll(it); block(this) }) }
+) = data.update { JsonObject(buildMap { putAll(it); block(this) }) }
