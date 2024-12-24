@@ -3,6 +3,7 @@ kotlin = "2.0.21"
 kotlinx-serialization = "1.7.3"
 kotlinx-coroutines = "1.9.0"
 kotlinx-datetime = "0.6.1"
+kotlinx-rpc = "0.4.0"
 
 compose = "1.7.0"
 ktor = "3.0.1"
@@ -38,12 +39,22 @@ kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
 
+kotlinx-rpc-core = { module = "org.jetbrains.kotlinx:kotlinx-rpc-core", version.ref = "kotlinx-rpc" }
+kotlinx-rpc-krpc-core = { module = "org.jetbrains.kotlinx:kotlinx-rpc-krpc-core", version.ref = "kotlinx-rpc" }
+kotlinx-rpc-krpc-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-rpc-krpc-serialization-json", version.ref = "kotlinx-rpc" }
+kotlinx-rpc-krpc-client = { module = "org.jetbrains.kotlinx:kotlinx-rpc-krpc-client", version.ref = "kotlinx-rpc" }
+kotlinx-rpc-krpc-server = { module = "org.jetbrains.kotlinx:kotlinx-rpc-krpc-server", version.ref = "kotlinx-rpc" }
+kotlinx-rpc-krpc-ktor-client = { module = "org.jetbrains.kotlinx:kotlinx-rpc-krpc-ktor-client", version.ref = "kotlinx-rpc" }
+kotlinx-rpc-krpc-ktor-server = { module = "org.jetbrains.kotlinx:kotlinx-rpc-krpc-ktor-server", version.ref = "kotlinx-rpc" }
+
 ##### KTOR Dependencies #####
 
 ktor-http = { module = "io.ktor:ktor-http", version.ref = "ktor" }
 ktor-resources = { module = "io.ktor:ktor-resources", version.ref = "ktor" }
 ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
 ktor-utils = { module = "io.ktor:ktor-utils", version.ref = "ktor" }
+
+ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 
 ##### ANDROID Dependencies #####
 
