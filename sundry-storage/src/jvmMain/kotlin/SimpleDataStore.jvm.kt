@@ -55,6 +55,7 @@ private suspend fun writeToFile(file: File, value: JsonObject) {
 
     try {
         withContext(Dispatchers.IO) {
+            file.parentFile?.mkdirs()
             file.writeText(text)
         }
     } catch (e: IOException) {
