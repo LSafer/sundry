@@ -3,11 +3,11 @@ package net.lsafer.sundry.krpc.client
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
-import kotlinx.rpc.RPCClient
+import kotlinx.rpc.RpcClient
 import net.lsafer.sundry.krpc.client.internal.firstShareStateIn
 import net.lsafer.sundry.krpc.client.internal.mapShareStateIn
 
-interface RPCClientState<O : RPCClient> {
+interface RpcClientState<O : RpcClient> {
     /**
      * A flow containing the latest produced client.
      */
@@ -29,11 +29,11 @@ interface RPCClientState<O : RPCClient> {
         client.mapShareStateIn(coroutineScope, block)
 }
 
-suspend fun <C : RPCClient> createRPCClientState(
+suspend fun <C : RpcClient> createRpcClientState(
     constructor: suspend () -> C,
     destructor: suspend (C) -> Unit,
     coroutineScope: CoroutineScope,
-): RPCClientState<C> = createRPCClientState(
+): RpcClientState<C> = createRpcClientState(
     argument = flowOf(Unit),
     constructor = { constructor() },
     destructor = destructor,
@@ -41,12 +41,12 @@ suspend fun <C : RPCClient> createRPCClientState(
 )
 
 @OptIn(ExperimentalCoroutinesApi::class)
-suspend fun <I, C : RPCClient> createRPCClientState(
+suspend fun <I, C : RpcClient> createRpcClientState(
     argument: Flow<I>,
     constructor: suspend (I) -> C,
     destructor: suspend (C) -> Unit,
     coroutineScope: CoroutineScope,
-): RPCClientState<C> {
+): RpcClientState<C> {
     val reConnectFlow = MutableSharedFlow<Unit>()
     val clientFlow = argument
         .distinctUntilChanged()
@@ -66,7 +66,7 @@ suspend fun <I, C : RPCClient> createRPCClientState(
         }
         .firstShareStateIn(coroutineScope)
 
-    return object : RPCClientState<C> {
+    return object : RpcClientState<C> {
         override val client = clientFlow
 
         override suspend fun reConnect() =

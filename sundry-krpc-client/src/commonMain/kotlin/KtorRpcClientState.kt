@@ -4,27 +4,27 @@ import io.ktor.websocket.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.rpc.krpc.ktor.client.KtorRPCClient
+import kotlinx.rpc.krpc.ktor.client.KtorRpcClient
 
-typealias KtorRPCClientState = RPCClientState<KtorRPCClient>
+typealias KtorRpcClientState = RpcClientState<KtorRpcClient>
 
-suspend fun createKtorRPCClientState(
-    constructor: suspend () -> KtorRPCClient,
-    destructor: suspend (KtorRPCClient) -> Unit = {},
+suspend fun createKtorRpcClientState(
+    constructor: suspend () -> KtorRpcClient,
+    destructor: suspend (KtorRpcClient) -> Unit = {},
     coroutineScope: CoroutineScope,
-): KtorRPCClientState = createKtorRPCClientState(
+): KtorRpcClientState = createKtorRpcClientState(
     argument = flowOf(Unit),
     constructor = { constructor() },
     destructor = destructor,
     coroutineScope = coroutineScope,
 )
 
-suspend fun <I> createKtorRPCClientState(
+suspend fun <I> createKtorRpcClientState(
     argument: Flow<I>,
-    constructor: suspend (I) -> KtorRPCClient,
-    destructor: suspend (KtorRPCClient) -> Unit = {},
+    constructor: suspend (I) -> KtorRpcClient,
+    destructor: suspend (KtorRpcClient) -> Unit = {},
     coroutineScope: CoroutineScope,
-): KtorRPCClientState = createRPCClientState(
+): KtorRpcClientState = createRpcClientState(
     argument = argument,
     constructor = constructor,
     destructor = {
