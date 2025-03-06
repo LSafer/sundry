@@ -40,7 +40,7 @@ abstract class TableScope {
      */
     abstract val tableInnerWidth: Dp
 
-    internal abstract val columnWeightList: MutableList<Int>
+    internal abstract val columnWeightList: MutableList<Float>
     internal abstract val columnWidthList: MutableList<Dp>
 
     internal var rowCursor = 0
@@ -74,7 +74,7 @@ fun BasicTable(
     content: @Composable TableScope.() -> Unit,
 ) {
     BoxWithConstraints(Modifier.fillMaxWidth().then(modifier)) {
-        val columnWeightList = remember { mutableStateListOf<Int>() }
+        val columnWeightList = remember { mutableStateListOf<Float>() }
         val columnWidthList = remember { mutableStateListOf<Dp>() }
 
         val tableOuterWidth = maxWidth
@@ -82,7 +82,7 @@ fun BasicTable(
             maxOf(tableOuterWidth, columnWidthList.fold(0.dp) { a, b -> a + b } + 1.dp)
         }
 
-        LaunchedEffect(columnWeightList.hashCode()) {
+        LaunchedEffect(columnWeightList.toList()) {
             val fr = tableOuterWidth / columnWeightList.sum()
             columnWeightList.forEachIndexed { i, weight ->
                 columnWidthList[i] = fr * weight
@@ -235,18 +235,21 @@ fun TableScope.TableRow(
 @Composable
 fun TableScope.TableCell(
     modifier: Modifier = Modifier,
-    columnWeight: Int? = null,
+    columnWeight: Float? = null,
     alignment: Alignment = Alignment.TopStart,
     content: @Composable BoxScope.(iColumn: Int) -> Unit,
 ) {
     val iColumn = remember { columnCursor++ }
 
     if (iColumn !in columnWidthList.indices) {
-        columnWeightList += 1
+        columnWeightList += 1f
         columnWidthList += 0.dp
     }
-    if (columnWeight != null) {
-        columnWeightList[iColumn] = columnWeight
+
+    remember(columnWeight) {
+        if (columnWeight != null) {
+            columnWeightList[iColumn] = columnWeight
+        }
     }
 
     val columnWidth by derivedStateOf { columnWidthList[iColumn] }
@@ -272,7 +275,7 @@ fun TableScope.TableCell(
 @Composable
 fun TableScope.TableResizableCell(
     modifier: Modifier = Modifier,
-    columnWeight: Int? = null,
+    columnWeight: Float? = null,
     alignment: Alignment = Alignment.TopStart,
     minColumnWidth: Dp = 50.dp,
     maxColumnWidth: Dp = 500.dp,
@@ -310,7 +313,7 @@ fun TableScope.TableSpanCell(
 
     for (jColumn in iColumn..columnSpan) {
         if (jColumn !in columnWidthList.indices) {
-            columnWeightList += 1
+            columnWeightList += 1f
             columnWidthList += 0.dp
         }
     }
