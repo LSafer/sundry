@@ -7,6 +7,13 @@ plugins {
     alias(libs.plugins.kotlin.multiplatform) apply false
 }
 
+group = "net.lsafer.sundry"
+
 tasks.wrapper {
     gradleVersion = "8.9"
+}
+
+subprojects {
+    version = rootProject.version
+    group = rootProject.group
 }
