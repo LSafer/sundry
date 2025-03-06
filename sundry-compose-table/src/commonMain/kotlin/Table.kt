@@ -71,7 +71,7 @@ fun BasicTable(
     horizontalScrollState: ScrollState = rememberScrollState(),
     flingBehavior: FlingBehavior? = null,
     reverseScrolling: Boolean = false,
-    content: @Composable TableScope.() -> Unit,
+    content: @Composable TableScope.() -> Unit = {},
 ) {
     BoxWithConstraints(Modifier.fillMaxWidth().then(modifier)) {
         val columnWeightList = remember { mutableStateListOf<Float>() }
@@ -165,7 +165,7 @@ fun OutlinedTable(
     flingBehavior: FlingBehavior? = null,
     reverseScrolling: Boolean = false,
 
-    content: @Composable TableScope.() -> Unit,
+    content: @Composable TableScope.() -> Unit = {},
 ) {
     OutlinedCard(
         modifier = modifier,
@@ -211,7 +211,7 @@ fun TableScope.TableRow(
     modifier: Modifier = Modifier,
     horizontalArrangement: Arrangement.Horizontal = Arrangement.Start,
     verticalAlignment: Alignment.Vertical = Alignment.Top,
-    content: @Composable (iRow: Int) -> Unit,
+    content: @Composable (iRow: Int) -> Unit = {},
 ) {
     val iRow = remember { columnCursor = 0; rowCursor++ }
 
@@ -237,7 +237,7 @@ fun TableScope.TableCell(
     modifier: Modifier = Modifier,
     columnWeight: Float? = null,
     alignment: Alignment = Alignment.TopStart,
-    content: @Composable BoxScope.(iColumn: Int) -> Unit,
+    content: @Composable BoxScope.(iColumn: Int) -> Unit = {},
 ) {
     val iColumn = remember { columnCursor++ }
 
@@ -279,7 +279,7 @@ fun TableScope.TableResizableCell(
     alignment: Alignment = Alignment.TopStart,
     minColumnWidth: Dp = 50.dp,
     maxColumnWidth: Dp = 500.dp,
-    content: @Composable BoxScope.(iColumn: Int) -> Unit,
+    content: @Composable BoxScope.(iColumn: Int) -> Unit = {},
 ) {
     TableCell(modifier, columnWeight) { iColumn ->
         Row(Modifier.fillMaxSize()) {
@@ -305,7 +305,7 @@ fun TableScope.TableSpanCell(
     modifier: Modifier = Modifier,
     columnSpan: Int = 1,
     alignment: Alignment = Alignment.TopStart,
-    content: @Composable BoxScope.(iColumn: Int) -> Unit,
+    content: @Composable BoxScope.(iColumn: Int) -> Unit = {},
 ) {
     val iColumn = remember {
         columnCursor.also { columnCursor += columnSpan }
