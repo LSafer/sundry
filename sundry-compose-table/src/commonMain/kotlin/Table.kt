@@ -342,11 +342,15 @@ fun TableScope.ColumnResizeHandle(
     val direction = LocalLayoutDirection.current
     val density = LocalDensity.current
 
+    val interactionSource = remember { MutableInteractionSource() }
+    val isHovered by interactionSource.collectIsHoveredAsState()
+
     Box(
         Modifier
-            .height(30.dp)
+            .fillMaxHeight()
             .requiredWidth(10.dp)
-            .pointerHoverIcon(PointerIcon.Hand, overrideDescendants = true)
+            .hoverable(interactionSource)
+            .pointerHoverIcon(PointerIcon.Hand)
             .pointerInput(Unit) {
                 detectHorizontalDragGestures { change, dragAmount ->
                     change.consume()
@@ -374,8 +378,8 @@ fun TableScope.ColumnResizeHandle(
                 onClick = {},
             )
             .drawBehind {
-                val ph = size.width / 2.8f // horizontal padding
-                val pv = size.height / 6f // vertical padding
+                val ph = size.width / if (isHovered) 2.8f else 2.2f // horizontal padding
+                val pv = size.height / if (isHovered) 6f else 5f // vertical padding
 
                 drawRoundRect(
                     color = Color.Gray,
