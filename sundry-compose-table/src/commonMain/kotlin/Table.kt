@@ -4,6 +4,8 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.FlingBehavior
 import androidx.compose.foundation.gestures.ScrollableDefaults
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.LastPage
@@ -74,47 +76,44 @@ fun BasicTable(
     content: @Composable TableScope.() -> Unit = {},
 ) {
     BoxWithConstraints(Modifier.fillMaxWidth().then(modifier)) {
-        val columnWeightList = remember { mutableStateListOf<Float>() }
-        val columnWidthList = remember { mutableStateListOf<Dp>() }
-
-        val tableOuterWidth = maxWidth
-        val tableInnerWidthState = derivedStateOf {
-            maxOf(tableOuterWidth, columnWidthList.fold(0.dp) { a, b -> a + b } + 1.dp)
-        }
-
-        LaunchedEffect(columnWeightList.toList()) {
-            val fr = tableOuterWidth / columnWeightList.sum()
-            columnWeightList.forEachIndexed { i, weight ->
-                columnWidthList[i] = fr * weight
-            }
-        }
-
-        val tableScope by derivedStateOf {
+        val tableOuterWidthState = rememberUpdatedState(maxWidth)
+        val tableScope = remember {
             object : TableScope() {
-                override val columnWeightList = columnWeightList
-                override val columnWidthList = columnWidthList
-                override val tableInnerWidth by tableInnerWidthState
-                override val tableOuterWidth = tableOuterWidth
+                override val columnWeightList = mutableStateListOf<Float>()
+                override val columnWidthList = mutableStateListOf<Dp>()
+                override val tableInnerWidth by derivedStateOf {
+                    maxOf(tableOuterWidth, columnWidthList.fold(0.dp) { a, b -> a + b } + 1.dp)
+                }
+                override val tableOuterWidth by tableOuterWidthState
             }
         }
 
-        val tableScrollWidth by derivedStateOf {
-            val weightSum = columnWeightList.sum()
-            tableOuterWidth / weightSum * weightSum + 1.dp
-        }
+        with(tableScope) {
+            LaunchedEffect(columnWeightList.toList()) {
+                val fr = tableOuterWidth / columnWeightList.sum()
+                columnWeightList.forEachIndexed { i, weight ->
+                    columnWidthList[i] = fr * weight
+                }
+            }
 
-        Column(
-            modifier = Modifier
-                .requiredWidth(width = tableScrollWidth)
-                .horizontalScroll(
-                    state = horizontalScrollState,
-                    flingBehavior = flingBehavior,
-                    reverseScrolling = reverseScrolling,
-                ),
-            verticalArrangement = verticalArrangement,
-            horizontalAlignment = horizontalAlignment,
-        ) {
-            content(tableScope)
+            val tableScrollWidth by derivedStateOf {
+                val weightSum = columnWeightList.sum()
+                tableOuterWidth / weightSum * weightSum + 1.dp
+            }
+
+            Column(
+                modifier = Modifier
+                    .requiredWidth(width = tableScrollWidth)
+                    .horizontalScroll(
+                        state = horizontalScrollState,
+                        flingBehavior = flingBehavior,
+                        reverseScrolling = reverseScrolling,
+                    ),
+                verticalArrangement = verticalArrangement,
+                horizontalAlignment = horizontalAlignment,
+            ) {
+                content()
+            }
         }
     }
 }
@@ -286,7 +285,6 @@ fun TableScope.TableResizableCell(
             Box(Modifier.fillMaxSize(), alignment) {
                 content(iColumn)
             }
-            Spacer(Modifier.fillMaxWidth().weight(1f))
             ColumnResizeHandle(iColumn, minColumnWidth, maxColumnWidth)
         }
     }
