@@ -210,7 +210,7 @@ fun OutlinedTable(
 fun TableScope.TableRow(
     modifier: Modifier = Modifier,
     horizontalArrangement: Arrangement.Horizontal = Arrangement.Start,
-    verticalAlignment: Alignment.Vertical = Alignment.Top,
+    verticalAlignment: Alignment.Vertical = Alignment.CenterVertically,
     content: @Composable (iRow: Int) -> Unit = {},
 ) {
     val iRow = remember { columnCursor = 0; rowCursor++ }
@@ -236,7 +236,7 @@ fun TableScope.TableRow(
 fun TableScope.TableCell(
     modifier: Modifier = Modifier,
     columnWeight: Float? = null,
-    alignment: Alignment = Alignment.TopStart,
+    alignment: Alignment = Alignment.CenterStart,
     content: @Composable BoxScope.(iColumn: Int) -> Unit = {},
 ) {
     val iColumn = remember { columnCursor++ }
@@ -276,7 +276,7 @@ fun TableScope.TableCell(
 fun TableScope.TableResizableCell(
     modifier: Modifier = Modifier,
     columnWeight: Float? = null,
-    alignment: Alignment = Alignment.TopStart,
+    alignment: Alignment = Alignment.CenterStart,
     minColumnWidth: Dp = 50.dp,
     maxColumnWidth: Dp = 500.dp,
     content: @Composable BoxScope.(iColumn: Int) -> Unit = {},
@@ -304,7 +304,7 @@ fun TableScope.TableResizableCell(
 fun TableScope.TableSpanCell(
     modifier: Modifier = Modifier,
     columnSpan: Int = 1,
-    alignment: Alignment = Alignment.TopStart,
+    alignment: Alignment = Alignment.CenterStart,
     content: @Composable BoxScope.(iColumn: Int) -> Unit = {},
 ) {
     val iColumn = remember {
