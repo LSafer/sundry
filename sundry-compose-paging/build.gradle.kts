@@ -10,12 +10,12 @@ plugins {
 }
 
 kotlin {
+    jvmToolchain(17)
     jvm("desktop")
 
     androidTarget {
-        @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_11)
+            jvmTarget.set(JvmTarget.JVM_17)
         }
     }
 
