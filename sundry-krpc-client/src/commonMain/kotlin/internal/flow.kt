@@ -13,9 +13,7 @@ internal fun <T, R> StateFlow<T>.mapShareStateIn(
         .stateIn(scope, started, block(value))
 }
 
-internal suspend fun <T> Flow<T>.firstShareStateIn(scope: CoroutineScope): StateFlow<T> {
+internal suspend fun <T> Flow<T>.firstStateIn(scope: CoroutineScope): StateFlow<T> {
     val started: SharingStarted = SharingStarted.Eagerly
-    return shareIn(scope, started, replay = 1).let {
-        it.stateIn(scope, started, it.first())
-    }
+    return stateIn(scope, started, first())
 }

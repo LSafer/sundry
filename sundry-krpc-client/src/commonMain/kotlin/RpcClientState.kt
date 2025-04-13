@@ -4,7 +4,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.rpc.RpcClient
-import net.lsafer.sundry.krpc.client.internal.firstShareStateIn
+import net.lsafer.sundry.krpc.client.internal.firstStateIn
 import net.lsafer.sundry.krpc.client.internal.mapShareStateIn
 
 interface RpcClientState<O : RpcClient> {
@@ -49,7 +49,6 @@ suspend fun <I, C : RpcClient> createRpcClientState(
 ): RpcClientState<C> {
     val reConnectFlow = MutableSharedFlow<Unit>()
     val clientFlow = argument
-        .distinctUntilChanged()
         .flatMapLatest { newArgument ->
             merge(
                 flowOf(newArgument),
@@ -64,7 +63,7 @@ suspend fun <I, C : RpcClient> createRpcClientState(
             destructor(oldClient)
             newClient
         }
-        .firstShareStateIn(coroutineScope)
+        .firstStateIn(coroutineScope)
 
     return object : RpcClientState<C> {
         override val client = clientFlow
