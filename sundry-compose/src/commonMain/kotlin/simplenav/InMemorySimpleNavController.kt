@@ -38,7 +38,7 @@ class InMemorySimpleNavController<T : Any>(
 
     override fun back(): Boolean {
         this.state.update {
-            if (it.position <= 0) return false
+            if (it.position <= -1) return false
             it.copy(position = it.position - 1)
         }
         return true
