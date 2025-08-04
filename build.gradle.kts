@@ -8,9 +8,10 @@ plugins {
 }
 
 group = "net.lsafer.sundry"
+version = "local"
 
 tasks.wrapper {
-    gradleVersion = "8.9"
+    gradleVersion = "8.14"
 }
 
 subprojects {
