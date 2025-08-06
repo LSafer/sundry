@@ -8,7 +8,7 @@ kotlinx-rpc = "0.9.1"
 compose = "1.8.2"
 
 # ANDROID
-agp = "8.12.0"
+agp = "8.11.0"
 android-compileSdk = "36"
 android-minSdk = "26"
 android-targetSdk = "36"
