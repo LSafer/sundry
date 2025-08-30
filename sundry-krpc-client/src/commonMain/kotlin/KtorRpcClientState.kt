@@ -1,7 +1,7 @@
 package net.lsafer.sundry.krpc.client
 
+import io.ktor.websocket.*
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.rpc.krpc.ktor.client.KtorRpcClient
@@ -29,7 +29,7 @@ suspend fun <I> createKtorRpcClientState(
     constructor = constructor,
     destructor = {
         destructor(it)
-        it.webSocketSession.cancelAndJoin()
+        it.webSocketSession.await().close()
     },
     coroutineScope = coroutineScope,
 )
