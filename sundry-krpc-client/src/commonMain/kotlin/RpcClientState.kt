@@ -11,22 +11,23 @@ interface RpcClientState<O : RpcClient> {
     /**
      * A flow containing the latest produced client.
      */
-    val client: StateFlow<O>
+    val clientState: StateFlow<O>
+    val client get() = clientState.value
 
     /**
-     * Re-produce a fresh client into [client] flow.
+     * Re-produce a fresh client into [clientState] flow.
      */
     suspend fun reConnect()
 
     /**
      * Return a [StateFlow] bound in [coroutineScope] that
-     * is the result of mapping [client] flow using [block].
+     * is the result of mapping [clientState] flow using [block].
      */
     fun <R> mapStateIn(
         coroutineScope: CoroutineScope,
         block: (O) -> R,
     ): StateFlow<R> =
-        client.mapShareStateIn(coroutineScope, block)
+        clientState.mapShareStateIn(coroutineScope, block)
 }
 
 suspend fun <C : RpcClient> createRpcClientState(
@@ -66,7 +67,7 @@ suspend fun <I, C : RpcClient> createRpcClientState(
         .firstStateIn(coroutineScope)
 
     return object : RpcClientState<C> {
-        override val client = clientFlow
+        override val clientState = clientFlow
 
         override suspend fun reConnect() =
             reConnectFlow.emit(Unit)
