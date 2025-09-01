@@ -13,7 +13,7 @@ import org.w3c.dom.HashChangeEvent
 
 private var gIsInstalled = false
 private var gInstalledScope: CoroutineScope? = null
-private var gOriginalListener: ((HashChangeEvent) -> dynamic)? = null
+private var gOriginalListener: ((HashChangeEvent) -> Unit)? = null
 
 fun <T : Any> WindowSimpleNavController<T>.tryGlobalInstall() =
     if (gIsInstalled) false else run { globalInstall(); true }
