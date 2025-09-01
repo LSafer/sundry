@@ -41,8 +41,8 @@ private fun writeToLocalStorage(name: String, value: JsonObject) {
 
 @Suppress("FunctionName")
 private fun localStorage_get(name: String): String? =
-    js("localStorage.get(name)")
+    js("localStorage.getItem(name)")
 
 @Suppress("FunctionName")
 private fun localStorage_set(name: String, value: String): Unit =
-    js("localStorage.set(name, value)")
+    js("localStorage.setItem(name, value)")
