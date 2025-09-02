@@ -21,9 +21,9 @@ fun SupportingPaneScaffoldCompat(
         calculatePaneScaffoldDirectiveCompat(),
     adaptStrategies: ThreePaneScaffoldAdaptStrategies =
         SupportingPaneScaffoldDefaults.adaptStrategies(),
-    mainPane: @Composable ThreePaneScaffoldScope.() -> Unit,
-    supportingPane: @Composable ThreePaneScaffoldScope.() -> Unit,
-    extraPane: (@Composable ThreePaneScaffoldScope.() -> Unit)? = null,
+    mainPane: @Composable ThreePaneScaffoldPaneScope.() -> Unit,
+    supportingPane: @Composable ThreePaneScaffoldPaneScope.() -> Unit,
+    extraPane: (@Composable ThreePaneScaffoldPaneScope.() -> Unit)? = null,
     modifier: Modifier = Modifier,
 ) {
     val navigator = rememberSupportingPaneScaffoldNavigator<Any>(
@@ -65,9 +65,9 @@ fun ListDetailPaneScaffoldCompat(
         calculatePaneScaffoldDirectiveCompat(),
     adaptStrategies: ThreePaneScaffoldAdaptStrategies =
         ListDetailPaneScaffoldDefaults.adaptStrategies(),
-    listPane: @Composable ThreePaneScaffoldScope.() -> Unit,
-    detailPane: @Composable ThreePaneScaffoldScope.() -> Unit,
-    extraPane: (@Composable ThreePaneScaffoldScope.() -> Unit)? = null,
+    listPane: @Composable ThreePaneScaffoldPaneScope.() -> Unit,
+    detailPane: @Composable ThreePaneScaffoldPaneScope.() -> Unit,
+    extraPane: (@Composable ThreePaneScaffoldPaneScope.() -> Unit)? = null,
     modifier: Modifier = Modifier,
 ) {
     val navigator = rememberListDetailPaneScaffoldNavigator<Any>(
