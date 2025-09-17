@@ -12,6 +12,9 @@ kotlin {
     js()
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs()
+    compilerOptions {
+        freeCompilerArgs.add("-Xcontext-parameters")
+    }
     sourceSets {
         val commonMain by getting
         val webCommon by creating
