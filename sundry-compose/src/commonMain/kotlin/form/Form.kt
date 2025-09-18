@@ -1,61 +1,8 @@
 package net.lsafer.sundry.compose.form
 
-import androidx.compose.runtime.*
-import androidx.compose.ui.focus.FocusRequester
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.plus
-import net.lsafer.sundry.compose.util.platformIODispatcher
-
-class ValidateScope(var error: String? = null) {
-    fun rule(condition: Boolean, message: () -> String) {
-        if (!condition) error = message()
-    }
-}
-
-class FormField<T> internal constructor(
-    val form: Form,
-    val defaultValue: T,
-    private val onValidate: ValidateScope.(T) -> Unit = { },
-) {
-    var latestValue by mutableStateOf(defaultValue)
-    var value by mutableStateOf(defaultValue)
-    var error by mutableStateOf<String?>(null)
-        private set
-
-    val isDirty by derivedStateOf { value != latestValue }
-    val isValid by derivedStateOf { error == null }
-
-    val focus = FocusRequester()
-
-    val index by derivedStateOf { form.fields.indexOf(this) }
-    val previous by derivedStateOf { form.fields.getOrNull(index - 1) }
-    val next by derivedStateOf { form.fields.getOrNull(index + 1) }
-
-    fun clear() {
-        error = null
-        value = defaultValue
-    }
-
-    fun reset() {
-        error = null
-        value = latestValue
-    }
-
-    fun update(newValue: T) {
-        error = null
-        latestValue = newValue
-        value = newValue
-    }
-
-    fun validate() {
-        val scope = ValidateScope()
-        scope.apply { onValidate(value) }
-        error = scope.error
-    }
-}
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 
 abstract class Form {
     private val _fields = mutableStateListOf<FormField<*>>()
@@ -65,8 +12,32 @@ abstract class Form {
     protected fun <T> field(
         defaultValue: T,
         onValidate: ValidateScope.(T) -> Unit = { },
-    ): FormField<T> {
-        return FormField(this, defaultValue, onValidate)
+    ): SingleFormField<T> {
+        return SingleFormField(this, defaultValue, onValidate)
+            .also { _fields += it }
+    }
+
+    protected fun <E> fieldList(
+        defaultValue: List<E> = emptyList(),
+        onValidate: ValidateScope.(List<E>) -> Unit = { },
+    ): ListFormField<E> {
+        return ListFormField(this, defaultValue, onValidate)
+            .also { _fields += it }
+    }
+
+    protected fun <E> fieldSet(
+        defaultValue: Set<E> = emptySet(),
+        onValidate: ValidateScope.(Set<E>) -> Unit = { },
+    ): SetFormField<E> {
+        return SetFormField(this, defaultValue, onValidate)
+            .also { _fields += it }
+    }
+
+    protected fun <K, V> fieldMap(
+        defaultValue: Map<K, V> = emptyMap(),
+        onValidate: ValidateScope.(Map<K, V>) -> Unit = { },
+    ): MapFormField<K, V> {
+        return MapFormField(this, defaultValue, onValidate)
             .also { _fields += it }
     }
 
@@ -96,31 +67,3 @@ abstract class Form {
         _fields.forEach { it.clear() }
     }
 }
-
-class FormAction(
-    private val coroutineScope: CoroutineScope,
-    private val condition: () -> Boolean = { true },
-    private val block: suspend () -> Unit,
-) {
-    var loadingCount by mutableStateOf(0)
-    val isLoading get() = loadingCount > 0
-    val isEnabled get() = !isLoading && condition()
-
-    operator fun invoke() {
-        coroutineScope.launch {
-            if (!condition())
-                return@launch
-
-            try {
-                loadingCount++
-                block()
-            } finally {
-                loadingCount--
-            }
-        }
-    }
-}
-
-context(vm: ViewModel)
-fun FormAction(condition: () -> Boolean = { true }, block: suspend () -> Unit) =
-    FormAction(vm.viewModelScope + platformIODispatcher, condition, block)
