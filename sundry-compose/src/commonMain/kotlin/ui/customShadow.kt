@@ -12,4 +12,4 @@ expect fun Modifier.customShadow(
     offsetY: Dp = 0.dp,
     offsetX: Dp = 0.dp,
     spread: Float = 1f,
-)
+): Modifier

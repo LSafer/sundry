@@ -17,8 +17,8 @@ actual fun Modifier.customShadow(
     offsetY: Dp,
     offsetX: Dp,
     spread: Float
-) {
-    drawBehind {
+): Modifier {
+    return drawBehind {
         drawIntoCanvas {
             val paint = Paint()
             val frameworkPaint = paint.asFrameworkPaint()
