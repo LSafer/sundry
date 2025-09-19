@@ -16,6 +16,7 @@ class FormAction(
     private val block: suspend () -> Unit,
 ) {
     var loadingCount by mutableStateOf(0)
+        private set
     val isLoading get() = loadingCount > 0
     val isEnabled get() = !isLoading && condition()
 
