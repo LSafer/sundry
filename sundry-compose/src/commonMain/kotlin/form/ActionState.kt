@@ -29,6 +29,6 @@ class ActionState {
 }
 
 context(vm: ViewModel)
-fun ActionState.use(block: suspend () -> Unit): Job {
+fun ActionState.useIO(block: suspend () -> Unit): Job {
     return vm.viewModelScope.launch(platformIODispatcher) { use(block) }
 }
