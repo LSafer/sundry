@@ -94,4 +94,11 @@ abstract class Form {
     fun clear() {
         _fields.forEach { it.clear() }
     }
+
+    /**
+     * Run validation for all the fields.
+     */
+    fun validate() {
+        _fields.forEach { it.validate() }
+    }
 }
