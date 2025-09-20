@@ -10,6 +10,9 @@ abstract class Form {
 
     val fields: List<FormField<*>> get() = _fields
 
+    protected fun group(vararg fields: FormField<*>) =
+        FieldGroup(this, fields.toList())
+
     protected fun <T> field(
         defaultValue: T,
         onValidate: ValidateScope.(T) -> Unit = { },
