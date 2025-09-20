@@ -1,9 +1,6 @@
 package net.lsafer.sundry.compose.form
 
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 
 abstract class Form {
     private val _fields = mutableStateListOf<FormField<*>>()
@@ -50,7 +47,7 @@ abstract class Form {
      *
      * Field UI Logic should ignore `field.isDirty` when this is true.
      */
-    val isDraft by mutableStateOf(false)
+    var isDraft by mutableStateOf(false)
 
     /**
      * A list of all error messages of fields.
