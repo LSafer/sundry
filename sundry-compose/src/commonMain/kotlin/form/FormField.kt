@@ -35,7 +35,6 @@ sealed class FormField<T>(
      * > Can be changed directly.
      */
     var error by mutableStateOf<String?>(null)
-        protected set
 
     /**
      * True, when the user changed the current value from the latest one.
