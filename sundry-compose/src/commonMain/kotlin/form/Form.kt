@@ -3,6 +3,7 @@ package net.lsafer.sundry.compose.form
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 
 abstract class Form {
     private val _fields = mutableStateListOf<FormField<*>>()
@@ -41,28 +42,55 @@ abstract class Form {
             .also { _fields += it }
     }
 
+    /**
+     * True, indicating that the form is for creating an entity.
+     *
+     * Field UI Logic should ignore `field.isDirty` when this is true.
+     */
+    val isDraft by mutableStateOf(false)
+
+    /**
+     * A list of all error messages of fields.
+     */
     val errors by derivedStateOf {
         _fields.mapNotNull { it.error }
     }
 
+    /**
+     * True, indicating that at least one field has changed from latest value.
+     *
+     * > UI logic should ignore this when [isDraft] is true.
+     */
     val isDirty by derivedStateOf {
         _fields.fold(false) { result, field ->
             field.isDirty || result
         }
     }
 
+    /**
+     * True, indicating that all fields validation passed.
+     */
     val isValid by derivedStateOf {
         _fields.fold(true) { result, field ->
             field.isValid && result
         }
     }
 
-    val isSubmittable get() = isDirty && isValid
+    /**
+     * True, when the form is ready to be submitted.
+     */
+    val isSubmittable get() = isValid && (isDraft || isDirty)
 
+    /**
+     * Change all fields to their latest values.
+     */
     fun reset() {
         _fields.forEach { it.reset() }
     }
 
+    /**
+     * Change all fields to their default values.
+     */
     fun clear() {
         _fields.forEach { it.clear() }
     }
