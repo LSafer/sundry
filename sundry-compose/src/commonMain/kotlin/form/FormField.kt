@@ -44,13 +44,20 @@ sealed class FormField<T>(
      */
     val isDirty by derivedStateOf { value != latestValue }
 
+    private val _isValidValidationScope = ValidateScope() // this is to prevent gc
+
     /**
-     * True, when validation failed.
+     * True, if [value] is valid according to field validation logic.
      *
-     * > Invoke [validate] to run validation.
+     * > This is decoupled from [validate] and will respond to every value change.
+     * > Field UI should use [error] instead.
      */
-    var isValid by mutableStateOf(false)
-        protected set
+    val isValid by derivedStateOf {
+        onValidate(_isValidValidationScope, value)
+        val isValid = _isValidValidationScope.error == null
+        _isValidValidationScope.error = null
+        isValid
+    }
 
     /**
      * The focus requester set to the UI component.
@@ -67,7 +74,6 @@ sealed class FormField<T>(
      * Change field value to default one.
      */
     fun clear() {
-        isValid = true
         error = null
         setValue(defaultValue)
     }
@@ -76,7 +82,6 @@ sealed class FormField<T>(
      * Change field value to latest one.
      */
     fun reset() {
-        isValid = true
         error = null
         setValue(latestValue)
     }
@@ -85,7 +90,6 @@ sealed class FormField<T>(
      * Update latest field value to [newValue].
      */
     fun update(newValue: T) {
-        isValid = true
         error = null
         latestValue = newValue
         setValue(newValue)
@@ -93,11 +97,13 @@ sealed class FormField<T>(
 
     /**
      * Run validation. This should be invoked when field loses focus.
+     *
+     * > This is to populate [error] with validation error and NOT for [isValid].
      */
     fun validate() {
+        // No need to cache scope object here, this is only invoked on focus loss.
         val scope = ValidateScope()
         scope.apply { onValidate(value) }
-        if (error != null) isValid = false
         error = scope.error
     }
 }
