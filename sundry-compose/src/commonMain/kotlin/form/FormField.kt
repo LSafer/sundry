@@ -68,14 +68,14 @@ sealed class FormField<T>(
     val previous by derivedStateOf { form.fields.getOrNull(index - 1) }
     val next by derivedStateOf { form.fields.getOrNull(index + 1) }
 
-    protected abstract fun setValue(newValue: T)
+    protected abstract fun setValue0(newValue: T)
 
     /**
      * Change field value to default one.
      */
     fun clear() {
         error = null
-        setValue(defaultValue)
+        setValue0(defaultValue)
     }
 
     /**
@@ -83,7 +83,7 @@ sealed class FormField<T>(
      */
     fun reset() {
         error = null
-        setValue(latestValue)
+        setValue0(latestValue)
     }
 
     /**
@@ -92,7 +92,7 @@ sealed class FormField<T>(
     fun update(newValue: T) {
         error = null
         latestValue = newValue
-        setValue(newValue)
+        setValue0(newValue)
     }
 
     /**
@@ -115,7 +115,7 @@ class SingleFormField<T> internal constructor(
 ) : FormField<T>(onValidate) {
     override var value by mutableStateOf(defaultValue)
 
-    override fun setValue(newValue: T) {
+    override fun setValue0(newValue: T) {
         value = newValue
     }
 }
@@ -127,7 +127,7 @@ class MapFormField<K, V> internal constructor(
 ) : FormField<Map<K, V>>(onValidate) {
     override val value = mutableStateMapOf<K, V>().also { it.putAll(defaultValue) }
 
-    override fun setValue(newValue: Map<K, V>) {
+    override fun setValue0(newValue: Map<K, V>) {
         value.clear()
         value.putAll(defaultValue)
     }
@@ -140,7 +140,7 @@ class ListFormField<E> internal constructor(
 ) : FormField<List<E>>(onValidate) {
     override val value = mutableStateListOf<E>().also { it.addAll(defaultValue) }
 
-    override fun setValue(newValue: List<E>) {
+    override fun setValue0(newValue: List<E>) {
         value.clear()
         value.addAll(defaultValue)
     }
@@ -153,7 +153,7 @@ class SetFormField<E> internal constructor(
 ) : FormField<Set<E>>(onValidate) {
     override val value = mutableStateSetOf<E>().also { it.addAll(defaultValue) }
 
-    override fun setValue(newValue: Set<E>) {
+    override fun setValue0(newValue: Set<E>) {
         value.clear()
         value.addAll(defaultValue)
     }
