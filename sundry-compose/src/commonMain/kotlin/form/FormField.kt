@@ -9,7 +9,8 @@ sealed class FormField<T>(
     /**
      * The form this field belongs/bound to.
      */
-    abstract val form: Form
+    lateinit var form: Form
+        internal set
 
     /**
      * The default value of the field for any entity.
@@ -107,8 +108,7 @@ sealed class FormField<T>(
     }
 }
 
-class SingleFormField<T> internal constructor(
-    override val form: Form,
+class SingleFormField<T>(
     override val defaultValue: T,
     onValidate: ValidateScope.(T) -> Unit = { },
 ) : FormField<T>(onValidate) {
@@ -119,8 +119,7 @@ class SingleFormField<T> internal constructor(
     }
 }
 
-class MapFormField<K, V> internal constructor(
-    override val form: Form,
+class MapFormField<K, V>(
     override val defaultValue: Map<K, V>,
     onValidate: ValidateScope.(Map<K, V>) -> Unit = { },
 ) : FormField<Map<K, V>>(onValidate) {
@@ -132,8 +131,7 @@ class MapFormField<K, V> internal constructor(
     }
 }
 
-class ListFormField<E> internal constructor(
-    override val form: Form,
+class ListFormField<E>(
     override val defaultValue: List<E>,
     onValidate: ValidateScope.(List<E>) -> Unit = { },
 ) : FormField<List<E>>(onValidate) {
@@ -145,8 +143,7 @@ class ListFormField<E> internal constructor(
     }
 }
 
-class SetFormField<E> internal constructor(
-    override val form: Form,
+class SetFormField<E>(
     override val defaultValue: Set<E>,
     onValidate: ValidateScope.(Set<E>) -> Unit = { },
 ) : FormField<Set<E>>(onValidate) {

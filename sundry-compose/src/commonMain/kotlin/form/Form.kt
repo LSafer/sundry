@@ -1,45 +1,28 @@
 package net.lsafer.sundry.compose.form
 
 import androidx.compose.runtime.*
+import kotlin.properties.ReadOnlyProperty
+import kotlin.reflect.KProperty
 
 abstract class Form {
     private val _fields = mutableStateListOf<FormField<*>>()
 
     val fields: List<FormField<*>> get() = _fields
 
-    protected fun group(vararg fields: FormField<*>) =
-        FieldGroup(this, fields.toList())
-
-    protected fun <T> field(
-        defaultValue: T,
-        onValidate: ValidateScope.(T) -> Unit = { },
-    ): SingleFormField<T> {
-        return SingleFormField(this, defaultValue, onValidate)
-            .also { _fields += it }
+    protected fun group(vararg fields: FormField<*>): FieldGroup {
+        val group = FieldGroup(fields.toList())
+        group.form = this
+        return group
     }
 
-    protected fun <E> fieldList(
-        defaultValue: List<E> = emptyList(),
-        onValidate: ValidateScope.(List<E>) -> Unit = { },
-    ): ListFormField<E> {
-        return ListFormField(this, defaultValue, onValidate)
-            .also { _fields += it }
-    }
-
-    protected fun <E> fieldSet(
-        defaultValue: Set<E> = emptySet(),
-        onValidate: ValidateScope.(Set<E>) -> Unit = { },
-    ): SetFormField<E> {
-        return SetFormField(this, defaultValue, onValidate)
-            .also { _fields += it }
-    }
-
-    protected fun <K, V> fieldMap(
-        defaultValue: Map<K, V> = emptyMap(),
-        onValidate: ValidateScope.(Map<K, V>) -> Unit = { },
-    ): MapFormField<K, V> {
-        return MapFormField(this, defaultValue, onValidate)
-            .also { _fields += it }
+    protected operator fun <T, S : FormField<T>> (() -> S).provideDelegate(
+        thisRef: Form,
+        property: KProperty<*>
+    ): ReadOnlyProperty<Form, S> {
+        val field = this()
+        field.form = this@Form
+        _fields.add(field)
+        return ReadOnlyProperty { _, _ -> field }
     }
 
     /**

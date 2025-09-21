@@ -3,10 +3,10 @@ package net.lsafer.sundry.compose.form
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 
-class FieldGroup internal constructor(
-    val form: Form,
-    val fields: List<FormField<*>>
-) {
+class FieldGroup(val fields: List<FormField<*>>) {
+    lateinit var form: Form
+        internal set
+
     val errors by derivedStateOf {
         fields.mapNotNull { it.error }
     }
