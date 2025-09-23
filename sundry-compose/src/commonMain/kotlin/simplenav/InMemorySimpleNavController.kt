@@ -6,6 +6,14 @@ import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.serializer
 
+inline fun <reified T : Any> InMemorySimpleNavController(default: T) =
+    InMemorySimpleNavController(InMemorySimpleNavController.State(listOf(default)))
+
+inline fun <reified T : Any> InMemorySimpleNavController(
+    entries: List<T> = emptyList(),
+    position: Int = entries.size - 1,
+) = InMemorySimpleNavController(InMemorySimpleNavController.State(entries, position))
+
 inline fun <reified T : Any> InMemorySimpleNavController(
     initialState: InMemorySimpleNavController.State<T> =
         InMemorySimpleNavController.State(),

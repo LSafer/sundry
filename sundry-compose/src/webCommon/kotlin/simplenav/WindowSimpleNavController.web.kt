@@ -8,6 +8,10 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.serializer
 
 inline fun <reified T : Any> WindowSimpleNavController(
+    route: T? = null,
+) = WindowSimpleNavController(WindowSimpleNavController.State(route))
+
+inline fun <reified T : Any> WindowSimpleNavController(
     initialState: WindowSimpleNavController.State<T> =
         WindowSimpleNavController.State(),
 ) = WindowSimpleNavController(initialState, serializer())
