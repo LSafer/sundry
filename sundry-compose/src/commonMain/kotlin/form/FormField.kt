@@ -4,6 +4,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.focus.FocusRequester
 
 sealed class FormField<T>(
+    /**
+     * The default value of the field for any entity.
+     */
+    val defaultValue: T,
     private val onValidate: ValidateScope.(T) -> Unit
 ) {
     /**
@@ -11,11 +15,6 @@ sealed class FormField<T>(
      */
     lateinit var form: Form
         internal set
-
-    /**
-     * The default value of the field for any entity.
-     */
-    abstract val defaultValue: T
 
     /**
      * The current value of the field. Mutated by the user.
@@ -109,9 +108,9 @@ sealed class FormField<T>(
 }
 
 class SingleFormField<T>(
-    override val defaultValue: T,
+    defaultValue: T,
     onValidate: ValidateScope.(T) -> Unit = { },
-) : FormField<T>(onValidate) {
+) : FormField<T>(defaultValue, onValidate) {
     override var value by mutableStateOf(defaultValue)
 
     override fun setValue0(newValue: T) {
@@ -120,9 +119,9 @@ class SingleFormField<T>(
 }
 
 class MapFormField<K, V>(
-    override val defaultValue: Map<K, V>,
+    defaultValue: Map<K, V>,
     onValidate: ValidateScope.(Map<K, V>) -> Unit = { },
-) : FormField<Map<K, V>>(onValidate) {
+) : FormField<Map<K, V>>(defaultValue, onValidate) {
     override val value = mutableStateMapOf<K, V>().also { it.putAll(defaultValue) }
 
     override fun setValue0(newValue: Map<K, V>) {
@@ -132,9 +131,9 @@ class MapFormField<K, V>(
 }
 
 class ListFormField<E>(
-    override val defaultValue: List<E>,
+    defaultValue: List<E>,
     onValidate: ValidateScope.(List<E>) -> Unit = { },
-) : FormField<List<E>>(onValidate) {
+) : FormField<List<E>>(defaultValue, onValidate) {
     override val value = mutableStateListOf<E>().also { it.addAll(defaultValue) }
 
     override fun setValue0(newValue: List<E>) {
@@ -144,9 +143,9 @@ class ListFormField<E>(
 }
 
 class SetFormField<E>(
-    override val defaultValue: Set<E>,
+    defaultValue: Set<E>,
     onValidate: ValidateScope.(Set<E>) -> Unit = { },
-) : FormField<Set<E>>(onValidate) {
+) : FormField<Set<E>>(defaultValue, onValidate) {
     override val value = mutableStateSetOf<E>().also { it.addAll(defaultValue) }
 
     override fun setValue0(newValue: Set<E>) {
