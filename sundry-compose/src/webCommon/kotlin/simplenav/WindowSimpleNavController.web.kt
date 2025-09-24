@@ -2,10 +2,13 @@ package net.lsafer.sundry.compose.simplenav
 
 import kotlinx.browser.window
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.serializer
+import net.lsafer.sundry.compose.internal.decodeBase64UrlSafeToStringOrNull
+import net.lsafer.sundry.compose.internal.deserializeJsonOrNull
+import net.lsafer.sundry.compose.internal.encodeBase64UrlSafe
+import net.lsafer.sundry.compose.internal.serializeToJsonString
 
 inline fun <reified T : Any> WindowSimpleNavController(
     route: T? = null,
@@ -32,10 +35,23 @@ class WindowSimpleNavController<T : Any>(
 
     override fun push(route: T): Boolean {
         require(isInstalled) { "NavController not installed" }
-        this.state.update {
-            if (route == it.route) return false
-            State(route = route)
-        }
+        // no need to sync in js land
+        val current = state.value
+        if (route == current.route) return false
+        val new = current.copy(route = route)
+        state.value = new
+        window.location.hash = new.encodeHash()
+        return true
+    }
+
+    override fun replace(route: T): Boolean {
+        require(isInstalled) { "NavController not installed" }
+        // no need to sync in js land
+        val current = state.value
+        if (route == current.route) return false
+        val new = current.copy(route = route)
+        state.value = new
+        window.location.replace("#${new.encodeHash()}")
         return true
     }
 
@@ -49,5 +65,15 @@ class WindowSimpleNavController<T : Any>(
         require(isInstalled) { "NavController not installed" }
         window.history.forward()
         return true
+    }
+
+    internal fun State<T>.encodeHash(): String {
+        return serializeToJsonString(stateSerializer)
+            .encodeBase64UrlSafe()
+    }
+
+    internal fun String.decodeHashOrNull(): State<T>? {
+        return decodeBase64UrlSafeToStringOrNull()
+            ?.deserializeJsonOrNull(stateSerializer)
     }
 }

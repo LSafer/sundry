@@ -44,6 +44,20 @@ class InMemorySimpleNavController<T : Any>(
         return true
     }
 
+    override fun replace(route: T): Boolean {
+        this.state.update {
+            if (route == it.route) return false
+            State(
+                entries = buildList {
+                    addAll(it.entries)
+                    set(it.position, route)
+                },
+                position = it.position,
+            )
+        }
+        return true
+    }
+
     override fun back(): Boolean {
         this.state.update {
             if (it.position <= -1) return false

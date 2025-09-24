@@ -14,6 +14,7 @@ interface SimpleNavController<T : Any> {
     val state: MutableStateFlow<out State<T>>
 
     fun push(route: T): Boolean
+    fun replace(route: T): Boolean
     fun back(): Boolean
     fun forward(): Boolean
 }
