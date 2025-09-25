@@ -4,7 +4,7 @@ import androidx.compose.runtime.*
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
-abstract class Form {
+abstract class Form(isDraft: Boolean = false) {
     private val _fields = mutableStateListOf<FormField<*>>()
 
     val fields: List<FormField<*>> get() = _fields
@@ -30,7 +30,7 @@ abstract class Form {
      *
      * Field UI Logic should ignore `field.isDirty` when this is true.
      */
-    var isDraft by mutableStateOf(false)
+    var isDraft by mutableStateOf(isDraft)
 
     /**
      * A list of all error messages of fields.
