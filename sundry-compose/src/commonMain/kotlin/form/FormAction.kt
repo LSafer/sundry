@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import net.lsafer.sundry.compose.util.platformIODispatcher
@@ -27,7 +28,9 @@ class FormAction(
 
             try {
                 loadingCount++
-                block()
+                coroutineScope {
+                    block()
+                }
             } finally {
                 loadingCount--
             }

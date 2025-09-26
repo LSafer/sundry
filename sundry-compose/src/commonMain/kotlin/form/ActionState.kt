@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -17,11 +18,13 @@ class ActionState {
     var isLoading by mutableStateOf(false)
         private set
 
-    suspend fun use(block: suspend () -> Unit) {
+    suspend fun use(block: suspend CoroutineScope.() -> Unit) {
         mutex.withLock {
             try {
                 isLoading = true
-                block()
+                coroutineScope {
+                    block()
+                }
             } finally {
                 isLoading = false
             }
@@ -31,5 +34,5 @@ class ActionState {
 
 context(vm: ViewModel)
 fun ActionState.useIO(block: suspend CoroutineScope.() -> Unit): Job {
-    return vm.viewModelScope.launch(platformIODispatcher) { use { block() } }
+    return vm.viewModelScope.launch(platformIODispatcher) { use(block) }
 }
