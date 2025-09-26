@@ -22,5 +22,4 @@ dependencyResolutionManagement {
 
 include(":sundry-compose")
 include(":sundry-compose-adaptive")
-include(":sundry-compose-table")
 include(":sundry-storage")

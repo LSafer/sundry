@@ -2,6 +2,10 @@
 
 Utilities accumulated while using `kotlin-multiplatform` that can't be in a library on itself.
 
+### Deprecation List
+
+- Moved `sundry-compose-table` to https://github.com/lsafer/compose-table
+
 ### Install
 
 The main way of installing this library is
