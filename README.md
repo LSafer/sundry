@@ -5,6 +5,7 @@ Utilities accumulated while using `kotlin-multiplatform` that can't be in a libr
 ### Deprecation List
 
 - Moved `sundry-compose-table` to https://github.com/lsafer/compose-table
+- Moved `net.lsafer.sundry.compose.simplenav` to https://github.com/lsafer/compose-simplenav
 
 ### Install
 
