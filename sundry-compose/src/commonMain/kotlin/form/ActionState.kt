@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
@@ -29,6 +30,6 @@ class ActionState {
 }
 
 context(vm: ViewModel)
-fun ActionState.useIO(block: suspend () -> Unit): Job {
-    return vm.viewModelScope.launch(platformIODispatcher) { use(block) }
+fun ActionState.useIO(block: suspend CoroutineScope.() -> Unit): Job {
+    return vm.viewModelScope.launch(platformIODispatcher) { use { block() } }
 }

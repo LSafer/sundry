@@ -13,7 +13,7 @@ import net.lsafer.sundry.compose.util.platformIODispatcher
 class FormAction(
     private val coroutineScope: CoroutineScope,
     private val condition: () -> Boolean = { true },
-    private val block: suspend () -> Unit,
+    private val block: suspend CoroutineScope.() -> Unit,
 ) {
     var loadingCount by mutableStateOf(0)
         private set
@@ -36,5 +36,5 @@ class FormAction(
 }
 
 context(vm: ViewModel)
-fun FormAction(condition: () -> Boolean = { true }, block: suspend () -> Unit) =
+fun FormAction(condition: () -> Boolean = { true }, block: suspend CoroutineScope.() -> Unit) =
     FormAction(vm.viewModelScope + platformIODispatcher, condition, block)
